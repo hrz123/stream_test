@@ -10,11 +10,11 @@ import (
 
 // - Q1: 输入 employees，返回 年龄 >22岁 的所有员工，年龄总和
 func Question1Sub1(employees []*Employee) int64 {
-	return stream.OfSlice(employees).Filter(func(e types.T) bool {
+	return int64(stream.OfSlice(employees).Filter(func(e types.T) bool {
 		return *(e.(*Employee).Age) > 22
 	}).ReduceWith(0, func(acc types.R, e types.T) types.R {
 		return acc.(int) + *(e.(*Employee).Age)
-	}).(int64)
+	}).(int))
 }
 
 // - Q2: - 输入 employees，返回 id 最小的十个员工，按 id 升序排序
@@ -49,6 +49,8 @@ func Question1Sub3(employees []*Employee) []*Employee {
 func Question1Sub4(employees []*Employee) map[int][]int64 {
 	return stream.OfSlice(employees).ReduceWith(map[int][]int64{}, func(acc types.R, e types.T) types.R {
 		employee := e.(*Employee)
-		return append(acc.(map[int][]int64)[*employee.Age], employee.Id)
+		m := acc.(map[int][]int64)
+		m[*employee.Age] = append(m[*employee.Age], employee.Id)
+		return m
 	}).(map[int][]int64)
 }
