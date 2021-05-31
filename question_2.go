@@ -16,13 +16,16 @@ func Question2Sub1(str string) int64 {
 
 // - Q2: 找出 []string 中，包含小写字母最多的字符串
 func Question2Sub2(list []string) string {
-	var maxCount int64
-	var s string
-	stream.OfSlice(list).ForEach(func(e types.T) {
-		if count := Question2Sub1(e.(string)); count > maxCount {
-			s = e.(string)
-			maxCount = count
+	return stream.OfSlice(list).
+		Map(func(e types.T) types.R {
+			return &types.Pair{
+				First:  e,
+				Second: Question2Sub1(e.(string)),
+			}
+		}).Reduce(func(e1 types.T, e2 types.T) types.T {
+		if e1.(*types.Pair).Second.(int64) > e2.(*types.Pair).Second.(int64) {
+			return e1
 		}
-	})
-	return s
+		return e2
+	}).Get().(*types.Pair).First.(string)
 }
